@@ -1,0 +1,89 @@
+---
+title: "Regression Models Course Project"
+author: "Daniel DeWaters"
+date: "11/19/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls())
+# Load dependencies/data
+library(plyr, warn.conflicts = FALSE)
+library(dplyr, warn.conflicts = FALSE)
+library(ggplot2)
+library(datasets)
+data(mtcars)
+```
+
+## Executive Summary
+This is an analysis for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome). They are particularly interested in the following two questions:
+
+1. Is an automatic or manual transmission better for MPG?
+2. Quantify the MPG difference between automatic and manual transmissions
+
+## Cleaning
+```{r}
+# Convert am and vs columns into factors with meaningful labels
+mtcars <-
+  mtcars %>%
+  mutate(vs = as.character(vs)) %>%
+  mutate(am = as.character(am)) %>%
+  mutate(vs = revalue(vs, c("0"="vshaped", "1"="straight"))) %>%
+  mutate(am = revalue(am, c("0"="automatic", "1"="manual"))) %>%
+  mutate(vs = as.factor(vs)) %>%
+  mutate(am = as.factor(am))
+```
+
+## Exploratory Analysis
+First we'll get a basic overview of all of the data
+```{r exploratoryAnalysis1}
+str(mtcars)
+```
+
+Then we'll get an overview of gas milage from automatic and manual transmission
+```{r automaticSummary}
+autoMPG <- 
+  mtcars %>%
+  filter(am == "automatic") %>%
+  select(mpg)
+
+manuMPG <-
+  mtcars %>%
+  filter(am == "manual") %>%
+  select(mpg)
+
+summary(autoMPG)
+summary(manuMPG)
+
+# Make boxplot
+mpgBP <- ggplot(mtcars, aes(x=as.character(am), y=mpg, color=am))
+mpgBP + geom_boxplot(aes(group=am)) +
+  ggtitle("Boxplots of Gas Mileage from Automatic and Manual Transmissions") +
+  xlab("Transmission") + ylab("Gas Milage (MPG") +
+  theme(legend.position="none")
+```
+
+## Models
+### Model 1
+MPG is the outcome and am is the predictor
+```{r model1}
+fit1 <- lm(mpg~am, mtcars)
+summary(fit1)
+```
+### Model 2
+MPG is the outcome and all of the other variables are the predictors
+```{r model2}
+fit2 <- lm(mpg~., mtcars)
+summary(fit2)
+```
+
+## Criteria
+1. Did the student interpret the coefficients correctly?
+3. Did the student fit multiple models and detail their strategy for model selection?
+4. Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
+5. Did the student do a residual plot and some diagnostics?
+6. Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
+7. Was the report brief (about 2 pages long) for the main body of the report and no longer than 5 with supporting appendix of figures?
