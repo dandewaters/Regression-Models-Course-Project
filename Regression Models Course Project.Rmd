@@ -29,12 +29,12 @@ This is an analysis for Motor Trend, a magazine about the automobile industry. L
 # Convert am and vs columns into factors with meaningful labels
 mtcars <-
   mtcars %>%
-  mutate(vs = as.character(vs)) %>%
-  mutate(am = as.character(am)) %>%
-  mutate(vs = revalue(vs, c("0"="vshaped", "1"="straight"))) %>%
-  mutate(am = revalue(am, c("0"="automatic", "1"="manual"))) %>%
   mutate(vs = as.factor(vs)) %>%
-  mutate(am = as.factor(am))
+  mutate(am = as.factor(am)) %>%
+  mutate(cyl= as.factor(cyl))
+
+levels(mtcars$vs) <- c("vshaped", "straight")
+levels(mtcars$am) <- c("automatic", "manual")
 ```
 
 ## Exploratory Analysis
