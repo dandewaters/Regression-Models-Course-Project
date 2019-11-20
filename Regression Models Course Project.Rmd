@@ -3,8 +3,8 @@ title: "Regression Models Course Project"
 author: "Daniel DeWaters"
 date: "11/19/2019"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +19,7 @@ data(mtcars)
 ```
 
 ## Executive Summary
-This is an analysis for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome). They are particularly interested in the following two questions:
+Here we run an analysis for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome). They are particularly interested in the following two questions:
 
 1. Is an automatic or manual transmission better for MPG?
 2. Quantify the MPG difference between automatic and manual transmissions
@@ -32,18 +32,18 @@ mtcars <-
   mutate(vs = as.factor(vs)) %>%
   mutate(am = as.factor(am))
 
-# Add menaingful labels to factor levels
+# Add meaningful labels to factor levels
 levels(mtcars$vs) <- c("vshaped", "straight")
 levels(mtcars$am) <- c("automatic", "manual")
 ```
 
 ## Exploratory Analysis
-First we'll get a basic overview of all of the data
+First we'll get a basic overview of all of the data:
 ```{r exploratoryAnalysis1}
 str(mtcars)
 ```
 
-Then we'll get an overview of gas milage from automatic and manual transmissions
+Then we'll get an overview of gas milage from automatic and manual transmissions:
 ```{r transmissionsSummary}
 
 # Make boxplot
@@ -53,30 +53,32 @@ mpgBP + geom_boxplot(aes(group=am)) +
   xlab("Transmission") + ylab("Gas Milage (MPG") +
   theme(legend.position="none")
 ```
+
 Here we can see a pretty distinct difference in distribution of gas mileage between manual and automatic transmission. Manual transmission seems to be centered at higher values of mpg than automatic.
 
 ## Models
-### Model 1
-A linear model where MPG is the outcome and am is the predictor.
+#### Model 1
+A linear model where "mpg" is the outcome and "am" is the predictor.
 ```{r model1}
 fit1 <- lm(mpg~am, mtcars)
 summary(fit1)
 ```
-This model shows that a manual transmission will get 7.245mpg more than an automatic. The adjusted R^2 is 0.3385, so this model can explain 33.85% of the variance around mpg. This is not very high, so we should add more variables to the model so it can explain a larger portion of the variability 
+This model shows that a manual transmission will get 7.245mpg more than an automatic. The adjusted R-squared is 0.3385, so this model can explain 33.85% of the variance around mpg. This is not very high, so we should add more variables to the model so it can explain a larger portion of the variability 
 
-### Model 2
-MPG is the outcome and all of the other variables are the predictors
+#### Model 2
+"mpg" is the outcome and all of the other variables are the predictors
 ```{r model2}
 fit2 <- lm(mpg~., mtcars)
 summary(fit2)
 ```
 When including the other variables, the adjusted R-squared value increases to 0.8066, so it can explain 80.66% of mpg's variance. From the P-values shown here, it seems that the predictor variables don't have much significance since they are all above 0.05. In order to remove the least significant predictor variables, we can use the step function.
 
+#### Model 3
 ```{r model3}
 fit3 <- step(fit2, direction = "backward", k=log(nrow(mtcars)), trace = F)
 summary(fit3)
 ```
-The step function selected wt, qsec, and am as the most significant variables. This increases our R-squared value again to 0.8336, so it can explain 83.36% of mpg's variance. This model also shows that a manual transmission will get more gas milage than an automatic, by 2.9358mpg.
+The step function selected "wt", "qsec", and "am" as the most significant variables. This increases our adjusted R-squared value again to 0.8336, so it can explain 83.36% of mpg's variance. This model also shows that a manual transmission will get more gas milage than an automatic, by 2.9358mpg.
 
 ## Residuals and Diagnostics
 ```{r diagnosis}
@@ -84,7 +86,7 @@ plot(fit3)
 ```
 
 ## Conclusion
-Across all of our models, we conclude that a manual transmission has better gas milage than an automatic transmission. Across all 3 of our models, manual transmissions were shown to have better gas milage. With fit3 being the most reliable model since its adjusted R-squared value is the highest, we can conclude that manual transmissions will get 2.9358 more miles to the gallon on average if weight and quarter mile time are held constant.
+Across all 3 of our models, manual transmissions were shown to have better gas milage. With "fit3" being the most reliable model since its adjusted R-squared value is the highest, we can conclude that manual transmissions will get 2.9358 more miles to the gallon on average if "wt" and "qsec" are held constant.
 
 | Model | Transmission w/ Higher MPG | Diff. in MPG | Adjusted R-squared Value |
 |-------|----------------------------|--------------|--------------------------|
