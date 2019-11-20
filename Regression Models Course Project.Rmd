@@ -26,13 +26,14 @@ This is an analysis for Motor Trend, a magazine about the automobile industry. L
 
 ## Cleaning
 ```{r}
-# Convert am and vs columns into factors with meaningful labels
+# Convert am, vs, and cyl columns into factors
 mtcars <-
   mtcars %>%
   mutate(vs = as.factor(vs)) %>%
   mutate(am = as.factor(am)) %>%
   mutate(cyl= as.factor(cyl))
 
+# Add menaingful labels to factor levels
 levels(mtcars$vs) <- c("vshaped", "straight")
 levels(mtcars$am) <- c("automatic", "manual")
 ```
@@ -43,20 +44,8 @@ First we'll get a basic overview of all of the data
 str(mtcars)
 ```
 
-Then we'll get an overview of gas milage from automatic and manual transmission
-```{r automaticSummary}
-autoMPG <- 
-  mtcars %>%
-  filter(am == "automatic") %>%
-  select(mpg)
-
-manuMPG <-
-  mtcars %>%
-  filter(am == "manual") %>%
-  select(mpg)
-
-summary(autoMPG)
-summary(manuMPG)
+Then we'll get an overview of gas milage from automatic and manual transmissions
+```{r transmissionsSummary}
 
 # Make boxplot
 mpgBP <- ggplot(mtcars, aes(x=as.character(am), y=mpg, color=am))
@@ -65,14 +54,17 @@ mpgBP + geom_boxplot(aes(group=am)) +
   xlab("Transmission") + ylab("Gas Milage (MPG") +
   theme(legend.position="none")
 ```
+Here we can see a pretty distinct difference in distribution of gas mileage between manual and automatic transmission. Manual transmission seems to be centered at higher values of mpg than automatic.
 
 ## Models
 ### Model 1
-MPG is the outcome and am is the predictor
+A linear model where MPG is the outcome and am is the predictor.
 ```{r model1}
 fit1 <- lm(mpg~am, mtcars)
 summary(fit1)
 ```
+The adjusted R^2 is 0.3385, so this model can explain 33.85% of the data. This is not very high, so we should add more variables to the model so it can explain a larger portion of the data.
+
 ### Model 2
 MPG is the outcome and all of the other variables are the predictors
 ```{r model2}
@@ -86,4 +78,3 @@ summary(fit2)
 4. Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
 5. Did the student do a residual plot and some diagnostics?
 6. Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
-7. Was the report brief (about 2 pages long) for the main body of the report and no longer than 5 with supporting appendix of figures?
