@@ -26,12 +26,11 @@ This is an analysis for Motor Trend, a magazine about the automobile industry. L
 
 ## Cleaning
 ```{r}
-# Convert am, vs, and cyl columns into factors
+# Convert am and vs columns into factors
 mtcars <-
   mtcars %>%
   mutate(vs = as.factor(vs)) %>%
-  mutate(am = as.factor(am)) %>%
-  mutate(cyl= as.factor(cyl))
+  mutate(am = as.factor(am))
 
 # Add menaingful labels to factor levels
 levels(mtcars$vs) <- c("vshaped", "straight")
@@ -63,7 +62,7 @@ A linear model where MPG is the outcome and am is the predictor.
 fit1 <- lm(mpg~am, mtcars)
 summary(fit1)
 ```
-The adjusted R^2 is 0.3385, so this model can explain 33.85% of the data. This is not very high, so we should add more variables to the model so it can explain a larger portion of the data.
+This model shows that a manual transmission will get 7.245mpg more than an automatic. The adjusted R^2 is 0.3385, so this model can explain 33.85% of the variance around mpg. This is not very high, so we should add more variables to the model so it can explain a larger portion of the variability 
 
 ### Model 2
 MPG is the outcome and all of the other variables are the predictors
@@ -71,10 +70,24 @@ MPG is the outcome and all of the other variables are the predictors
 fit2 <- lm(mpg~., mtcars)
 summary(fit2)
 ```
+When including the other variables, the adjusted R-squared value increases to 0.8066, so it can explain 80.66% of mpg's variance. From the P-values shown here, it seems that the predictor variables don't have much significance since they are all above 0.05. In order to remove the least significant predictor variables, we can use the step function.
 
-## Criteria
-1. Did the student interpret the coefficients correctly?
-3. Did the student fit multiple models and detail their strategy for model selection?
-4. Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
-5. Did the student do a residual plot and some diagnostics?
-6. Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
+```{r model3}
+fit3 <- step(fit2, direction = "backward", k=log(nrow(mtcars)), trace = F)
+summary(fit3)
+```
+The step function selected wt, qsec, and am as the most significant variables. This increases our R-squared value again to 0.8336, so it can explain 83.36% of mpg's variance. This model also shows that a manual transmission will get more gas milage than an automatic, by 2.9358mpg.
+
+## Residuals and Diagnostics
+```{r diagnosis}
+plot(fit3)
+```
+
+## Conclusion
+Across all of our models, we conclude that a manual transmission has better gas milage than an automatic transmission. Across all 3 of our models, manual transmissions were shown to have better gas milage. With fit3 being the most reliable model since its adjusted R-squared value is the highest, we can conclude that manual transmissions will get 2.9358 more miles to the gallon on average if weight and quarter mile time are held constant.
+
+| Model | Transmission w/ Higher MPG | Diff. in MPG | Adjusted R-squared Value |
+|-------|----------------------------|--------------|--------------------------|
+| fit1  | Manual                     | 7.245        | 0.3385                   |
+| fit2  | Manual                     | 2.52023      | 0.8066                   |
+| fit3  | Manual                     | 2.9358       | 0.8336                   |
