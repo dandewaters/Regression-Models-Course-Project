@@ -14,6 +14,7 @@ rm(list=ls())
 library(plyr, warn.conflicts = FALSE)
 library(dplyr, warn.conflicts = FALSE)
 library(ggplot2)
+library(GGally)
 library(datasets)
 data(mtcars)
 ```
@@ -86,6 +87,7 @@ The step function selected "wt", "qsec", and "am" as the most significant variab
 plot(fit3)
 # Correlation pairs
 pairs(mtcars)
+ggpairs(mtcars)
 # Multicolinearity of variables
 mtcarsCorrMatrix <- cor(mtcars[sapply(mtcars,is.numeric)])
 corrplot(mtcarsCorrMatrix,method="number")
