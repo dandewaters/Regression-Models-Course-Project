@@ -82,7 +82,13 @@ The step function selected "wt", "qsec", and "am" as the most significant variab
 
 ## Residuals and Diagnostics
 ```{r diagnosis}
+# Residuals
 plot(fit3)
+# Correlation pairs
+pairs(mtcars)
+# Multicolinearity of variables
+mtcarsCorrMatrix <- cor(mtcars[sapply(mtcars,is.numeric)])
+corrplot(mtcarsCorrMatrix,method="number")
 ```
 
 ## Conclusion
